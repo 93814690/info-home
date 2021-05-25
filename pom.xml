@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>fly</artifactId>
+    <groupId>top.liyf</groupId>
+    <version>1.0</version>
+  </parent>
+
+  <artifactId>info-home</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>info-home</name>
+  <description>Demo project for Spring Boot</description>
+
+  <properties>
+    <java.version>11</java.version>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
+      <artifactId>fly-core</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
+      <artifactId>fly-nacos</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
+      <artifactId>fly-mysql</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <!-- 环境标识，需要与配置文件的名称相对应 -->
+        <profiles.active>dev</profiles.active>
+      </properties>
+      <activation>
+        <!-- 默认环境 -->
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <profiles.active>prod</profiles.active>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
