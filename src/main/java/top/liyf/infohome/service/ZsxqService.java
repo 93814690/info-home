@@ -10,9 +10,9 @@ import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
 import top.liyf.infohome.dao.TopicDao;
 import top.liyf.infohome.dao.ZsxqConfigurationDao;
-import top.liyf.infohome.model.Response;
-import top.liyf.infohome.model.Topic;
-import top.liyf.infohome.model.ZsxqConfiguration;
+import top.liyf.infohome.model.zsxq.Response;
+import top.liyf.infohome.model.zsxq.Topic;
+import top.liyf.infohome.model.zsxq.ZsxqConfiguration;
 import top.liyf.infohome.util.ZsxqConst;
 
 import java.util.*;

@@ -1,4 +1,4 @@
-package top.liyf.infohome.model;
+package top.liyf.infohome.model.zsxq;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -11,8 +11,8 @@ import java.io.Serializable;
  * Created in 2021-05-20
  */
 @Data
-@Entity(name = "zsxq_talk")
-public class Talk implements Serializable {
+@Entity(name = "zsxq_answer")
+public class Answer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

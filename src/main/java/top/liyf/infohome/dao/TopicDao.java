@@ -1,7 +1,7 @@
 package top.liyf.infohome.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import top.liyf.infohome.model.Topic;
+import top.liyf.infohome.model.zsxq.Topic;
 
 /**
  * @author liyf

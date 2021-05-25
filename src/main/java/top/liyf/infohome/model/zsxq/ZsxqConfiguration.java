@@ -1,4 +1,4 @@
-package top.liyf.infohome.model;
+package top.liyf.infohome.model.zsxq;
 
 import lombok.Data;
 
