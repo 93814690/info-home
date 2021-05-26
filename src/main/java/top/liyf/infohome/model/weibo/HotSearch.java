@@ -46,6 +46,9 @@ public class HotSearch {
     @JsonProperty(value = "is_hot")
     private int isHot;
 
+    @JsonProperty(value = "is_new")
+    private int isNew;
+
     @JsonProperty(value = "is_gov")
     private int isGov;
 

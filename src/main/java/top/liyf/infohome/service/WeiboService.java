@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import top.liyf.fly.common.core.exception.BusinessException;
 import top.liyf.fly.common.core.result.ResultCode;
 import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
+import top.liyf.fly.push.api.domain.ChanifyText;
 import top.liyf.infohome.dao.WeiboConfigurationDao;
 import top.liyf.infohome.dao.WeiboHotSearchDao;
+import top.liyf.infohome.feign.ChanifyClient;
 import top.liyf.infohome.model.weibo.HotSearch;
 import top.liyf.infohome.model.weibo.HotSearchResponse;
 import top.liyf.infohome.model.weibo.WeiboConfiguration;
@@ -29,6 +32,8 @@ public class WeiboService {
     private WeiboHotSearchDao hotSearchDao;
     @Autowired
     private WeiboConfigurationDao configurationDao;
+    @Autowired
+    private ChanifyClient chanifyClient;
 
     public void getHotSearch() throws Exception {
         String url = "https://weibo.com/ajax/side/hotSearch";
@@ -53,11 +58,31 @@ public class WeiboService {
         }
     }
 
-    private void handleHotSearch(HotSearch hotgov) {
-        Optional<HotSearch> byMid = hotSearchDao.findByMid(hotgov.getMid());
+    private void handleHotSearch(HotSearch hotSearch) {
+        Optional<HotSearch> byMid = hotSearchDao.findByMid(hotSearch.getMid());
         if (byMid.isEmpty()) {
-            hotSearchDao.save(hotgov);
-            // todo push
+            hotSearchDao.save(hotSearch);
+            //  push
+            ChanifyText text = new ChanifyText();
+            String emoticon = hotSearch.getEmoticon();
+            String title = "微博 - ";
+            if (StringUtils.hasText(emoticon)) {
+                title += emoticon;
+            }
+            title += "新热搜";
+
+            if (hotSearch.getIsFei() == 1) {
+                title += " - [沸]";
+            } else if (hotSearch.getIsHot() == 1) {
+                title += " - [热]";
+            } else if (hotSearch.getIsNew() == 1) {
+                title += " - [新]";
+            }
+            text.setTitle(title);
+            text.setText(hotSearch.getNote());
+            text.setSound(1);
+            text.setPriority(10);
+            chanifyClient.text(text);
         }
     }
 

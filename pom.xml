@@ -9,12 +9,13 @@
   </parent>
 
   <artifactId>info-home</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <name>info-home</name>
   <description>Demo project for Spring Boot</description>
 
   <properties>
     <java.version>11</java.version>
+    <fly.push.version>1.0</fly.push.version>
   </properties>
 
   <dependencies>
@@ -35,6 +36,18 @@
       <groupId>top.liyf</groupId>
       <artifactId>fly-mysql</artifactId>
       <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
+      <artifactId>fly-common-feign</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
+      <artifactId>fly-push-api</artifactId>
+      <version>${fly.push.version}</version>
     </dependency>
 
     <dependency>
