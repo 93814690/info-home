@@ -11,7 +11,8 @@ import javax.persistence.*;
  */
 @Data
 @Entity(name = "weibo_hot_search")
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames="mid")})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "mid"),
+        @UniqueConstraint(columnNames = {"note", "onboardTime"})})
 public class HotSearch {
 
     @Id
@@ -31,6 +32,9 @@ public class HotSearch {
     private String emoticon;
 
     private long num;
+
+    @JsonProperty(value = "realpos")
+    private int realPos;
 
     @JsonProperty(value = "onboard_time")
     private long onboardTime;

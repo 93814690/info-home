@@ -49,7 +49,7 @@ public class WeiboService {
                 handleHotSearch(hotgov);
             }
             List<HotSearch> realtime = response.getData().getRealtime();
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < 10; i++) {
                 HotSearch hotSearch = realtime.get(i);
                 if (hotSearch.getIsAd() == 0) {
                     handleHotSearch(hotSearch);
@@ -59,7 +59,7 @@ public class WeiboService {
     }
 
     private void handleHotSearch(HotSearch hotSearch) {
-        Optional<HotSearch> byMid = hotSearchDao.findByMid(hotSearch.getMid());
+        Optional<HotSearch> byMid = hotSearchDao.findByNoteAndOnboardTime(hotSearch.getNote(), hotSearch.getOnboardTime());
         if (byMid.isEmpty()) {
             hotSearchDao.save(hotSearch);
             //  push
@@ -72,12 +72,13 @@ public class WeiboService {
             title += "新热搜";
 
             if (hotSearch.getIsFei() == 1) {
-                title += " - [沸]";
+                title += " - [沸] - ";
             } else if (hotSearch.getIsHot() == 1) {
-                title += " - [热]";
+                title += " - [热] - ";
             } else if (hotSearch.getIsNew() == 1) {
-                title += " - [新]";
+                title += " - [新] - ";
             }
+            title += hotSearch.getRealPos();
             text.setTitle(title);
             text.setText(hotSearch.getNote());
             text.setSound(1);

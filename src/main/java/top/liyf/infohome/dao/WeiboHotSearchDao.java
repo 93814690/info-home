@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface WeiboHotSearchDao extends JpaRepository<HotSearch, String> {
 
     Optional<HotSearch> findByMid(String mid);
+
+    Optional<HotSearch> findByNoteAndOnboardTime(String note, long onboardTime);
 }
