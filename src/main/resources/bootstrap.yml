@@ -5,12 +5,13 @@ spring:
   application:
     name: @artifactId@
   profiles:
-    active: @profiles.active@
+    active: @profileActive@
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: localhost:8858
       config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
         enabled: true
         group: INFO
         file-extension: yaml

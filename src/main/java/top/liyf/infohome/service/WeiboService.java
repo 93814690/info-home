@@ -42,14 +42,13 @@ public class WeiboService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         HotSearchResponse response = mapper.readValue(result.getContent(), HotSearchResponse.class);
-        System.out.println("response = " + response);
         if (response.getOk() == 1) {
             HotSearch hotgov = response.getData().getHotgov();
             if (hotgov != null) {
                 handleHotSearch(hotgov);
             }
             List<HotSearch> realtime = response.getData().getRealtime();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 5; i++) {
                 HotSearch hotSearch = realtime.get(i);
                 if (hotSearch.getIsAd() == 0) {
                     handleHotSearch(hotSearch);
@@ -83,6 +82,7 @@ public class WeiboService {
             text.setText(hotSearch.getNote());
             text.setSound(1);
             text.setPriority(10);
+            text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
             chanifyClient.text(text);
         }
     }
