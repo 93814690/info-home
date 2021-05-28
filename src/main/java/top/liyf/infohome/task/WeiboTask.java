@@ -15,7 +15,7 @@ public class WeiboTask {
     @Autowired
     private WeiboService service;
 
-    @Scheduled(cron = "0 */1 7-23 * * ?")
+    @Scheduled(cron = "0 */2 7-23 * * ?")
     public void monitorHotSearch() throws Exception {
         service.getHotSearch();
     }

@@ -40,6 +40,12 @@
 
     <dependency>
       <groupId>top.liyf</groupId>
+      <artifactId>fly-redis</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
       <artifactId>fly-common-feign</artifactId>
       <version>${parent.version}</version>
     </dependency>

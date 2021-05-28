@@ -16,6 +16,8 @@ import top.liyf.infohome.feign.ChanifyClient;
 import top.liyf.infohome.model.weibo.HotSearch;
 import top.liyf.infohome.model.weibo.HotSearchResponse;
 import top.liyf.infohome.model.weibo.WeiboConfiguration;
+import top.liyf.infohome.util.RedisConst;
+import top.liyf.redis.service.RedisService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,8 @@ public class WeiboService {
     private WeiboConfigurationDao configurationDao;
     @Autowired
     private ChanifyClient chanifyClient;
+    @Autowired
+    private RedisService redisService;
 
     public void getHotSearch() throws Exception {
         String url = "https://weibo.com/ajax/side/hotSearch";
@@ -43,17 +47,32 @@ public class WeiboService {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         HotSearchResponse response = mapper.readValue(result.getContent(), HotSearchResponse.class);
         if (response.getOk() == 1) {
+            redisService.set(RedisConst.WB_COOKIE_EXPIRED, false);
             HotSearch hotgov = response.getData().getHotgov();
             if (hotgov != null) {
                 handleHotSearch(hotgov);
             }
             List<HotSearch> realtime = response.getData().getRealtime();
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 HotSearch hotSearch = realtime.get(i);
                 if (hotSearch.getIsAd() == 0) {
                     handleHotSearch(hotSearch);
                 }
             }
+        } else {
+            if (response.getOk() == -100) {
+                Boolean expired = (Boolean) redisService.get(RedisConst.WB_COOKIE_EXPIRED);
+                if (expired == null || !expired) {
+                    redisService.set(RedisConst.WB_COOKIE_EXPIRED, true);
+                    ChanifyText text = new ChanifyText();
+                    text.setTitle("error - 微博");
+                    text.setText("cookie 已过期");
+                    text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
+                    chanifyClient.text(text);
+                }
+            }
+            System.out.println("response = " + response);
+            throw new BusinessException(ResultCode.SYSTEM_ERROR);
         }
     }
 

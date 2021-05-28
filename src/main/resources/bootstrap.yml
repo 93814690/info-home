@@ -15,4 +15,6 @@ spring:
         enabled: true
         group: INFO
         file-extension: yaml
+        shared-configs:
+          - redis-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
 
