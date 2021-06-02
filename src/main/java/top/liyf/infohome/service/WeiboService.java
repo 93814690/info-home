@@ -48,7 +48,6 @@ public class WeiboService {
         HotSearchResponse response = mapper.readValue(result.getContent(), HotSearchResponse.class);
         if (response.getOk() == 1) {
             redisService.set(RedisConst.WB_COOKIE_EXPIRED, false);
-            redisService.set(RedisConst.WB_ERROR_OTHER, false);
             HotSearch hotgov = response.getData().getHotgov();
             if (hotgov != null) {
                 handleHotSearch(hotgov);
@@ -60,6 +59,7 @@ public class WeiboService {
                     handleHotSearch(hotSearch);
                 }
             }
+            redisService.set(RedisConst.WB_ERROR_OTHER, false);
         } else {
             if (response.getOk() == -100) {
                 Boolean expired = (Boolean) redisService.get(RedisConst.WB_COOKIE_EXPIRED);
