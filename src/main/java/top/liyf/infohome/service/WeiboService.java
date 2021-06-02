@@ -22,6 +22,7 @@ import top.liyf.redis.service.RedisService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author liyf
@@ -80,6 +81,9 @@ public class WeiboService {
     private void handleHotSearch(HotSearch hotSearch) {
         Optional<HotSearch> old = hotSearchDao.findByNoteAndOnboardTime(hotSearch.getNote(), hotSearch.getOnboardTime());
         if (old.isEmpty()) {
+            if (!StringUtils.hasText(hotSearch.getMid())) {
+                hotSearch.setMid(UUID.randomUUID().toString());
+            }
             hotSearchDao.save(hotSearch);
             //  push
             ChanifyText text = new ChanifyText();
