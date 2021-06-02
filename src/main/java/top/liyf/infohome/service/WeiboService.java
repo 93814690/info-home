@@ -48,6 +48,7 @@ public class WeiboService {
         HotSearchResponse response = mapper.readValue(result.getContent(), HotSearchResponse.class);
         if (response.getOk() == 1) {
             redisService.set(RedisConst.WB_COOKIE_EXPIRED, false);
+            redisService.set(RedisConst.WB_ERROR_OTHER, false);
             HotSearch hotgov = response.getData().getHotgov();
             if (hotgov != null) {
                 handleHotSearch(hotgov);
@@ -77,8 +78,8 @@ public class WeiboService {
     }
 
     private void handleHotSearch(HotSearch hotSearch) {
-        Optional<HotSearch> byMid = hotSearchDao.findByNoteAndOnboardTime(hotSearch.getNote(), hotSearch.getOnboardTime());
-        if (byMid.isEmpty()) {
+        Optional<HotSearch> old = hotSearchDao.findByNoteAndOnboardTime(hotSearch.getNote(), hotSearch.getOnboardTime());
+        if (old.isEmpty()) {
             hotSearchDao.save(hotSearch);
             //  push
             ChanifyText text = new ChanifyText();
