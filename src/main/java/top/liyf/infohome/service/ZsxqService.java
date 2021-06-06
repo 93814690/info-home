@@ -9,12 +9,16 @@ import top.liyf.fly.common.core.exception.BusinessException;
 import top.liyf.fly.common.core.result.ResultCode;
 import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
+import top.liyf.fly.push.api.domain.ChanifyText;
 import top.liyf.infohome.dao.TopicDao;
 import top.liyf.infohome.dao.ZsxqConfigurationDao;
+import top.liyf.infohome.feign.ChanifyClient;
 import top.liyf.infohome.model.zsxq.Response;
 import top.liyf.infohome.model.zsxq.Topic;
 import top.liyf.infohome.model.zsxq.ZsxqConfiguration;
+import top.liyf.infohome.util.RedisConst;
 import top.liyf.infohome.util.ZsxqConst;
+import top.liyf.redis.service.RedisService;
 
 import java.util.*;
 
@@ -30,6 +34,10 @@ public class ZsxqService {
     private TopicDao topicDao;
     @Autowired
     private ZsxqConfigurationDao configurationDao;
+    @Autowired
+    private ChanifyClient chanifyClient;
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 功能描述: 获取星球数据
@@ -82,6 +90,8 @@ public class ZsxqService {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Response response = mapper.readValue(result.getContent(), Response.class);
         if (response.isSucceeded()) {
+            redisService.set(RedisConst.ZSXQ_COOKIE_EXPIRED, false);
+            redisService.set(RedisConst.ZSXQ_ERROR_OTHER, false);
             List<Topic> topics = response.getResp_data().getTopics();
             for (Topic topic : topics) {
                 Optional<Topic> byId = topicDao.findById(topic.getTopic_id());
@@ -105,13 +115,31 @@ public class ZsxqService {
             map.put("endTime", endTime);
             return map;
         } else if (response.getCode() == 1059) {
-            Thread.sleep(15000);
             log.info("try again");
+            Thread.sleep(15000);
             return getData(url, header, param, getAll);
-        } else if (response.getCode() == 401) {
-            // cookie
-            throw new BusinessException(ResultCode.SYSTEM_ERROR);
         } else {
+            if (response.getCode() == 401) {
+                Boolean expired = (Boolean) redisService.get(RedisConst.ZSXQ_COOKIE_EXPIRED);
+                if (expired == null || !expired) {
+                    redisService.set(RedisConst.ZSXQ_COOKIE_EXPIRED, true);
+                    ChanifyText text = new ChanifyText();
+                    text.setTitle("error - 知识星球");
+                    text.setText("cookie 已过期");
+                    text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
+                    chanifyClient.text(text);
+                }
+            } else {
+                Boolean error = (Boolean) redisService.get(RedisConst.ZSXQ_ERROR_OTHER);
+                if (error == null || !error) {
+                    redisService.set(RedisConst.ZSXQ_ERROR_OTHER, true);
+                    ChanifyText text = new ChanifyText();
+                    text.setTitle("error - 知识星球");
+                    text.setText(response.toString());
+                    text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
+                    chanifyClient.text(text);
+                }
+            }
             log.error("response = " + response);
             throw new BusinessException(ResultCode.SYSTEM_ERROR);
         }

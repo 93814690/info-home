@@ -9,4 +9,8 @@ public class RedisConst {
     public static final String WB_COOKIE_EXPIRED = "weibo:cookie:expired";
 
     public static final String WB_ERROR_OTHER = "weibo:error:other";
+
+    public static final String ZSXQ_COOKIE_EXPIRED = "zsxq:cookie:expired";
+
+    public static final String ZSXQ_ERROR_OTHER = "zsxq:error:other";
 }
