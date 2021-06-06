@@ -2,6 +2,7 @@ package top.liyf.infohome.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.liyf.fly.common.core.exception.BusinessException;
@@ -22,6 +23,7 @@ import java.util.*;
  * Created in 2021-05-18
  */
 @Service
+@Slf4j
 public class ZsxqService {
 
     @Autowired
@@ -30,13 +32,14 @@ public class ZsxqService {
     private ZsxqConfigurationDao configurationDao;
 
     /**
-     * 功能描述: 获取星球所有数据
+     * 功能描述: 获取星球数据
      *
      * @param groupId 星球Id
      * @param endTime endTime(分页开始时间)
+     * @param getAll  是否获取全部
      * @author liyf
      */
-    public void getDataAll(Long groupId, String endTime) throws Exception {
+    public void getData(Long groupId, String endTime, boolean getAll) throws Exception {
         String url = "https://api.zsxq.com/v2/groups/" + groupId + "/topics";
 
         HashMap<String, String> header = getHeader(groupId);
@@ -50,12 +53,12 @@ public class ZsxqService {
 
         boolean hasNext = true;
         while (hasNext) {
-            HashMap<String, Object> result = getData(url, header, param, true);
+            HashMap<String, Object> result = getData(url, header, param, getAll);
             hasNext = (boolean) result.get("hasNext");
             if (hasNext) {
                 param.put("end_time", (String) result.get("endTime"));
+                Thread.sleep(15000);
             }
-            Thread.sleep(5000);
         }
     }
 
@@ -70,7 +73,6 @@ public class ZsxqService {
      * @author liyf
      */
     public HashMap<String, Object> getData(String url, HashMap<String, String> header, Map<String, String> param, boolean getAll) throws Exception {
-        System.out.println("param = " + param);
         HashMap<String, Object> map = new HashMap<>(4);
         boolean hasNext = false;
         String endTime = "";
@@ -92,7 +94,6 @@ public class ZsxqService {
                     continue;
                 }
                 hasNext = true;
-                System.out.println("bu cun zai");
                 topicDao.save(topic);
                 endTime = topic.getCreate_time();
             }
@@ -104,11 +105,14 @@ public class ZsxqService {
             map.put("endTime", endTime);
             return map;
         } else if (response.getCode() == 1059) {
-            System.out.println("try again");
-            Thread.sleep(10000);
+            Thread.sleep(15000);
+            log.info("try again");
             return getData(url, header, param, getAll);
+        } else if (response.getCode() == 401) {
+            // cookie
+            throw new BusinessException(ResultCode.SYSTEM_ERROR);
         } else {
-            System.out.println("response = " + response);
+            log.error("response = " + response);
             throw new BusinessException(ResultCode.SYSTEM_ERROR);
         }
 
@@ -123,7 +127,7 @@ public class ZsxqService {
         HashMap<String, String> header = new HashMap<>(32);
         header.put("Referer", "https://wx.zsxq.com/");
         header.put("Cookie", configuration.getCookie());
-        header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36");
+        header.put("User-Agent", configuration.getUserAgent());
         header.put("x-request-id", configuration.getRequestId());
         header.put("x-signature", configuration.getSignature());
         header.put("x-timestamp", configuration.getTimestamp());

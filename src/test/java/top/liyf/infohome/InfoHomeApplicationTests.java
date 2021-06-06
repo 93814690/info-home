@@ -13,7 +13,7 @@ class InfoHomeApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        service.getDataAll(222454121411L, "2020-09-01T08:35:57.700+0800");
+        service.getData(222454121411L, "2020-09-01T08:35:57.700+0800", false);
     }
 
 }

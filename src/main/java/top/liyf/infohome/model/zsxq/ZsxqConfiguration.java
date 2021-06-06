@@ -28,4 +28,6 @@ public class ZsxqConfiguration {
     @Column(length = 1000)
     private String cookie;
 
+    private String userAgent;
+
 }
