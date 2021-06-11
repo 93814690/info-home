@@ -68,6 +68,7 @@ public class ZsxqService {
                 Thread.sleep(15000);
             }
         }
+        log.info("获取成功");
     }
 
     /**
