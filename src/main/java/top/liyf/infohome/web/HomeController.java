@@ -1,11 +1,9 @@
 package top.liyf.infohome.web;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author liyf
@@ -14,8 +12,9 @@ import java.util.Map;
 @RestController
 public class HomeController {
 
-    @PostMapping("/a")
-    public void a(@RequestBody Map<String, List<String>> codes) {
-        System.out.println("codes = " + codes);
+    @GetMapping("/a")
+    public String a() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }
