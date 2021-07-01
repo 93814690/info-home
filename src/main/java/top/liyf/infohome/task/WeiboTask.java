@@ -40,6 +40,8 @@ public class WeiboTask {
                 ChanifyText text = new ChanifyText();
                 text.setTitle("error - 微博");
                 text.setText("未知异常");
+                text.setSound(1);
+                text.setPriority(10);
                 text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
                 chanifyClient.text(text);
             }

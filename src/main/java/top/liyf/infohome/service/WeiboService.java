@@ -19,10 +19,9 @@ import top.liyf.infohome.model.weibo.WeiboConfiguration;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * @author liyf
@@ -69,6 +68,8 @@ public class WeiboService {
                     ChanifyText text = new ChanifyText();
                     text.setTitle("error - 微博");
                     text.setText("cookie 已过期");
+                    text.setSound(1);
+                    text.setPriority(10);
                     text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
                     chanifyClient.text(text);
                 }
@@ -96,6 +97,7 @@ public class WeiboService {
 
             if (hotSearch.getIsFei() == 1) {
                 title += " - [沸] - ";
+                text.setSound(1);
             } else if (hotSearch.getIsHot() == 1) {
                 title += " - [热] - ";
             } else if (hotSearch.getIsNew() == 1) {
@@ -104,7 +106,9 @@ public class WeiboService {
             title += hotSearch.getRealPos();
             text.setTitle(title);
             text.setText(hotSearch.getNote());
-            text.setSound(1);
+            String encode = URLEncoder.encode(hotSearch.getWord(), StandardCharsets.UTF_8);
+            String action = "查看|sinaweibo://searchall?q=" + encode;
+            text.setActions(Collections.singletonList(action));
             text.setPriority(10);
             text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
             chanifyClient.text(text);
