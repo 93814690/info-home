@@ -1,9 +1,13 @@
 package top.liyf.infohome.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
 
 /**
  * @author liyf
@@ -15,6 +19,20 @@ public class HomeController {
     @GetMapping("/a")
     public String a() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        System.out.println("authorities = " + authorities);
         return authentication.getName();
+    }
+
+    @PreAuthorize("hasAnyAuthority('infouser')")
+    @GetMapping("/b")
+    public String b() {
+        return "b";
+    }
+
+    @PreAuthorize("hasAuthority('aaa')")
+    @GetMapping("/c")
+    public String c() {
+        return "c";
     }
 }
