@@ -85,7 +85,12 @@ public class WeiboService {
             if (!StringUtils.hasText(hotSearch.getMid())) {
                 hotSearch.setMid(UUID.randomUUID().toString());
             }
-            hotSearchDao.save(hotSearch);
+            try {
+                hotSearchDao.save(hotSearch);
+            } catch (Exception e) {
+                hotSearchDao.deleteByMid(hotSearch.getMid());
+                hotSearchDao.save(hotSearch);
+            }
             //  push
             ChanifyText text = new ChanifyText();
             String emoticon = hotSearch.getEmoticon();
