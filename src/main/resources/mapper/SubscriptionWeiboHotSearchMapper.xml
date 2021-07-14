@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.liyf.infohome.dao.SubscriptionWeiboHotSearchMapper">
+  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch">
+    <!--@mbg.generated-->
+    <!--@Table subscription_weibo_hot_search-->
+    <id column="id" jdbcType="BIGINT" property="id"/>
+    <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+    <result column="ranking_list" jdbcType="INTEGER" property="rankingList"/>
+    <result column="state" jdbcType="INTEGER" property="state"/>
+    <result column="sound" jdbcType="BOOLEAN" property="sound"/>
+  </resultMap>
+  <resultMap id="JoinResultMap" type="top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch">
+    <!--@mbg.generated-->
+    <id column="subscription_weibo_hot_search_id" jdbcType="BIGINT" property="id"/>
+    <result column="subscription_weibo_hot_search_user_id" jdbcType="VARCHAR" property="userId"/>
+    <result column="subscription_weibo_hot_search_ranking_list" jdbcType="INTEGER" property="rankingList"/>
+    <result column="subscription_weibo_hot_search_state" jdbcType="INTEGER" property="state"/>
+    <result column="subscription_weibo_hot_search_sound" jdbcType="BOOLEAN" property="sound"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, user_id, ranking_list, `state`, sound
+  </sql>
+  <sql id="Join_Column_List">
+    <!--@mbg.generated-->
+    subscription_weibo_hot_search.id as subscription_weibo_hot_search_id, subscription_weibo_hot_search.user_id as
+    subscription_weibo_hot_search_user_id,
+    subscription_weibo_hot_search.ranking_list as subscription_weibo_hot_search_ranking_list,
+    subscription_weibo_hot_search.`state` as subscription_weibo_hot_search_state, subscription_weibo_hot_search.sound as
+    subscription_weibo_hot_search_sound
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List"/>
+    from subscription_weibo_hot_search
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into subscription_weibo_hot_search (user_id, ranking_list, `state`,
+    sound)
+    values (#{userId,jdbcType=VARCHAR}, #{rankingList,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
+    #{sound,jdbcType=BOOLEAN})
+  </insert>
+</mapper>

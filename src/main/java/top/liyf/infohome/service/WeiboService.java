@@ -2,33 +2,36 @@ package top.liyf.infohome.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import top.liyf.fly.common.core.exception.BusinessException;
 import top.liyf.fly.common.core.result.ResultCode;
 import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
 import top.liyf.fly.push.api.domain.ChanifyText;
+import top.liyf.infohome.dao.HotSearchV2Mapper;
 import top.liyf.infohome.dao.WeiboConfigurationDao;
 import top.liyf.infohome.dao.WeiboHotSearchDao;
 import top.liyf.infohome.feign.ChanifyClient;
 import top.liyf.infohome.model.weibo.HotSearch;
 import top.liyf.infohome.model.weibo.HotSearchResponse;
+import top.liyf.infohome.model.weibo.HotSearchV2;
 import top.liyf.infohome.model.weibo.WeiboConfiguration;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @author liyf
  * Created in 2021-05-25
  */
 @Service
+@Slf4j
 public class WeiboService {
 
     @Autowired
@@ -39,8 +42,11 @@ public class WeiboService {
     private ChanifyClient chanifyClient;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private HotSearchV2Mapper hotSearchV2Mapper;
 
-    public void getHotSearch() throws Exception {
+    public ArrayList<HotSearchV2> getHotSearch() throws Exception {
+        ArrayList<HotSearchV2> list = new ArrayList<>();
         String url = "https://weibo.com/ajax/side/hotSearch";
         HashMap<String, String> header = getHeader();
         HttpClientResult result = HttpUtils.doGet(url, header, null);
@@ -49,18 +55,18 @@ public class WeiboService {
         HotSearchResponse response = mapper.readValue(result.getContent(), HotSearchResponse.class);
         if (response.getOk() == 1) {
             redisService.set(RedisConst.WB_COOKIE_EXPIRED, false);
-            HotSearch hotgov = response.getData().getHotgov();
-            if (hotgov != null) {
-                handleHotSearch(hotgov);
-            }
+
             List<HotSearch> realtime = response.getData().getRealtime();
-            for (int i = 0; i < 3; i++) {
-                HotSearch hotSearch = realtime.get(i);
+            for (HotSearch hotSearch : realtime) {
                 if (hotSearch.getIsAd() == 0) {
-                    handleHotSearch(hotSearch);
+                    HotSearchV2 hotSearchV2 = new HotSearchV2(hotSearch);
+                    hotSearchV2Mapper.insert(hotSearchV2);
+                    // 放入队列，判断推送
+                    list.add(hotSearchV2);
                 }
             }
             redisService.set(RedisConst.WB_ERROR_OTHER, false);
+            return list;
         } else {
             if (response.getOk() == -100) {
                 Boolean expired = (Boolean) redisService.get(RedisConst.WB_COOKIE_EXPIRED);
@@ -69,45 +75,14 @@ public class WeiboService {
                     ChanifyText text = new ChanifyText();
                     text.setTitle("error - 微博");
                     text.setText("cookie 已过期");
+                    text.setSound(1);
+                    text.setPriority(10);
                     text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
                     chanifyClient.text(text);
                 }
             }
-            System.out.println("response = " + response);
+            log.error("response = {}", response);
             throw new BusinessException(ResultCode.SYSTEM_ERROR);
-        }
-    }
-
-    private void handleHotSearch(HotSearch hotSearch) {
-        Optional<HotSearch> old = hotSearchDao.findByNoteAndOnboardTime(hotSearch.getNote(), hotSearch.getOnboardTime());
-        if (old.isEmpty()) {
-            if (!StringUtils.hasText(hotSearch.getMid())) {
-                hotSearch.setMid(UUID.randomUUID().toString());
-            }
-            hotSearchDao.save(hotSearch);
-            //  push
-            ChanifyText text = new ChanifyText();
-            String emoticon = hotSearch.getEmoticon();
-            String title = "微博 - ";
-            if (StringUtils.hasText(emoticon)) {
-                title += emoticon;
-            }
-            title += "新热搜";
-
-            if (hotSearch.getIsFei() == 1) {
-                title += " - [沸] - ";
-            } else if (hotSearch.getIsHot() == 1) {
-                title += " - [热] - ";
-            } else if (hotSearch.getIsNew() == 1) {
-                title += " - [新] - ";
-            }
-            title += hotSearch.getRealPos();
-            text.setTitle(title);
-            text.setText(hotSearch.getNote());
-            text.setSound(1);
-            text.setPriority(10);
-            text.setToken("CICy4YgGEiJBREpGVTM3RFpNNEZMRlZaN1FCWDVGSE5BTlY0TVM0RFpNGhRmU0vjxji92dxl8bfsQfWCC4Km-SIECAEQASoiQUhSN1pLV1czUkNRQVFJUlpCNUVDVElFS09WWFBSU05TTQ..sbiZSJu63KdZK1dm2l0Rtljnz-btD3V3tdLX3SeRimA");
-            chanifyClient.text(text);
         }
     }
 

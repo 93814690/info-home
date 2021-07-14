@@ -16,6 +16,7 @@
   <properties>
     <java.version>11</java.version>
     <fly.push.version>1.0</fly.push.version>
+    <fly.auth.api.version>1.0</fly.auth.api.version>
   </properties>
 
   <dependencies>
@@ -54,6 +55,12 @@
       <groupId>top.liyf</groupId>
       <artifactId>fly-push-api</artifactId>
       <version>${fly.push.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>top.liyf</groupId>
+      <artifactId>fly-auth-api</artifactId>
+      <version>${fly.auth.api.version}</version>
     </dependency>
 
     <dependency>

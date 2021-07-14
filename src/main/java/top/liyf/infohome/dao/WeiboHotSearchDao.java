@@ -1,6 +1,7 @@
 package top.liyf.infohome.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 import top.liyf.infohome.model.weibo.HotSearch;
 
 import java.util.Optional;
@@ -14,4 +15,7 @@ public interface WeiboHotSearchDao extends JpaRepository<HotSearch, String> {
     Optional<HotSearch> findByMid(String mid);
 
     Optional<HotSearch> findByNoteAndOnboardTime(String note, long onboardTime);
+
+    @Transactional
+    void deleteByMid(String mid);
 }
