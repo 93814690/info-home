@@ -90,7 +90,6 @@ public class WeiboTask {
                             text.setActions(Collections.singletonList(action));
                             text.setToken(userSubscription.getChanifyToken());
                         }
-                        // todo sound
                         if (rule.getSound()) {
                             text.setSound(1);
                         }
