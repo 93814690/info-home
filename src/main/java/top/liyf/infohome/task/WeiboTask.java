@@ -43,7 +43,7 @@ public class WeiboTask {
     @Autowired
     private HotSearchPushMapper pushMapper;
 
-    @Scheduled(cron = "0 */2 7-23 * * ?")
+    @Scheduled(cron = "0 */1 7-23 * * ?")
     public void monitorHotSearch() {
         try {
             ArrayList<HotSearchV2> list = service.getHotSearch();
@@ -68,6 +68,7 @@ public class WeiboTask {
 
     private void push(ArrayList<HotSearchV2> list) {
         // 获取用户及推送规则
+        // todo redis 缓存
         List<UserSubscription> userList = userChanifyMapper.getUserSubscriptionWithHotSearch();
         for (HotSearchV2 hotSearchV2 : list) {
             // 判断及推送
@@ -90,6 +91,9 @@ public class WeiboTask {
                             text.setToken(userSubscription.getChanifyToken());
                         }
                         // todo sound
+                        if (rule.getSound()) {
+                            text.setSound(1);
+                        }
                     }
                 }
                 if (text != null) {
