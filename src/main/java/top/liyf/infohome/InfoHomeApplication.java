@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"top.liyf"})
+@ComponentScan(basePackages = {"top.liyf", "com.geccocrawler.gecco.spring"})
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableScheduling

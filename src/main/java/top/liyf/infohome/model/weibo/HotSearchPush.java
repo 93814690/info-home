@@ -3,6 +3,7 @@ package top.liyf.infohome.model.weibo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author liyf
@@ -16,7 +17,7 @@ public class HotSearchPush implements Serializable {
 
     private String word;
 
-    private Long listTime;
+    private LocalDateTime pushTime;
 
     private static final long serialVersionUID = 1L;
 }

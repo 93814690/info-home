@@ -14,7 +14,7 @@ public interface HotSearchPushMapper {
 
     HotSearchPush selectByPrimaryKey(Long id);
 
-    HotSearchPush selectOneByUserIdAndWordAndListTime(@Param("userId") String userId, @Param("word") String word, @Param("listTime") Long listTime);
+    HotSearchPush selectOneByUserIdAndWord(@Param("userId") String userId, @Param("word") String word);
 
 
 }
