@@ -40,7 +40,7 @@ public class WeiboTask {
     @Autowired
     private HotSearchPushMapper pushMapper;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "0 */1 7-23 * * ?")
     public void pushHotSearch() {
         Object o = redisService.lPop(RedisConst.WB_LIST_HOTSEARCH);
         ArrayList<HotSearchV2> list = new ArrayList<>();
