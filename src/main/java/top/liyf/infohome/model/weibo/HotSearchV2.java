@@ -1,6 +1,8 @@
 package top.liyf.infohome.model.weibo;
 
 import lombok.Data;
+import org.springframework.util.StringUtils;
+import top.liyf.infohome.gecco.HSItem;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -40,6 +42,26 @@ public class HotSearchV2 implements Serializable {
     private LocalDateTime createTime;
 
     private static final long serialVersionUID = 1L;
+
+    public HotSearchV2() {
+    }
+
+    public HotSearchV2(HSItem item) {
+        this.word = item.getWord();
+        this.emoticon = item.getEmoticon();
+        this.rank = item.getRank();
+        this.num = item.getNum();
+        if (!StringUtils.hasText(item.getState())) {
+            this.state = 0;
+        } else if ("新".equals(item.getState())) {
+            this.state = 1;
+        } else if ("热".equals(item.getState())) {
+            this.state = 2;
+        } else if ("沸".equals(item.getState())) {
+            this.state = 3;
+        }
+        this.createTime = LocalDateTime.now();
+    }
 
     public HotSearchV2(HotSearch old) {
         this.word = old.getWord();
