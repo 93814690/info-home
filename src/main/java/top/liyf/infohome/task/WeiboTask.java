@@ -18,6 +18,7 @@ import top.liyf.redis.service.RedisService;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,7 +63,7 @@ public class WeiboTask {
         for (HotSearchV2 hotSearchV2 : list) {
             // 判断及推送
             for (UserSubscription userSubscription : userList) {
-                HotSearchPush hotSearchPush = pushMapper.selectOneByUserIdAndWordAndListTime(userSubscription.getUserId(), hotSearchV2.getWord(), hotSearchV2.getListTime());
+                HotSearchPush hotSearchPush = pushMapper.selectOneByUserIdAndWord(userSubscription.getUserId(), hotSearchV2.getWord());
                 if (hotSearchPush != null) {
                     continue;
                 }
@@ -89,7 +90,7 @@ public class WeiboTask {
                     HotSearchPush push = new HotSearchPush();
                     push.setUserId(userSubscription.getUserId());
                     push.setWord(hotSearchV2.getWord());
-                    push.setListTime(hotSearchV2.getListTime());
+                    push.setPushTime(LocalDateTime.now());
                     pushMapper.insert(push);
                 }
 

@@ -31,15 +31,11 @@ public class HotSearchV2 implements Serializable {
      * 1:新
      * 2:热
      * 3:沸
+     * 4:爆
      */
     private Integer state;
 
-    /**
-     * 上榜时间
-     */
-    private Long listTime;
-
-    private LocalDateTime createTime;
+    private LocalDateTime recordTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -59,8 +55,12 @@ public class HotSearchV2 implements Serializable {
             this.state = 2;
         } else if ("沸".equals(item.getState())) {
             this.state = 3;
+        } else if ("爆".equals(item.getState())) {
+            this.state = 4;
+        } else {
+            this.state = 999;
         }
-        this.createTime = LocalDateTime.now();
+        this.recordTime = LocalDateTime.now();
     }
 
     public HotSearchV2(HotSearch old) {
@@ -77,7 +77,6 @@ public class HotSearchV2 implements Serializable {
         } else {
             this.state = 0;
         }
-        this.listTime = old.getOnboardTime();
-        this.createTime = LocalDateTime.now();
+        this.recordTime = LocalDateTime.now();
     }
 }

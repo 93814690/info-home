@@ -10,12 +10,11 @@
     <result column="rank" jdbcType="INTEGER" property="rank"/>
     <result column="num" jdbcType="BIGINT" property="num"/>
     <result column="state" jdbcType="INTEGER" property="state"/>
-    <result column="list_time" jdbcType="BIGINT" property="listTime"/>
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="record_time" jdbcType="TIMESTAMP" property="recordTime"/>
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, word, emoticon, `rank`, num, `state`, list_time, create_time
+    id, word, emoticon, `rank`, num, `state`, record_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -28,10 +27,8 @@
           useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into weibo_hot_search_v2 (word, emoticon, `rank`,
-    num, `state`, list_time,
-    create_time)
+    num, `state`, record_time)
     values (#{word,jdbcType=VARCHAR}, #{emoticon,jdbcType=VARCHAR}, #{rank,jdbcType=INTEGER},
-    #{num,jdbcType=BIGINT}, #{state,jdbcType=INTEGER}, #{listTime,jdbcType=BIGINT},
-    #{createTime,jdbcType=TIMESTAMP})
+    #{num,jdbcType=BIGINT}, #{state,jdbcType=INTEGER}, #{recordTime,jdbcType=TIMESTAMP})
   </insert>
 </mapper>
