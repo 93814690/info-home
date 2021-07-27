@@ -34,6 +34,8 @@
     <root level="INFO">
       <appender-ref ref="file"/>
     </root>
+    <!-- 关闭 gecco 字段提取错误日志 -->
+    <logger name="com.geccocrawler.gecco.spider.render.FieldRenderException" level="off"/>
   </springProfile>
 
 </configuration>
