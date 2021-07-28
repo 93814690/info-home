@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>info-home</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <name>info-home</name>
   <description>Demo project for Spring Boot</description>
 
@@ -99,8 +99,20 @@
           <artifactId>asm</artifactId>
           <groupId>org.ow2.asm</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>com.alibaba</groupId>
+          <artifactId>fastjson</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.76</version>
+    </dependency>
+
 
     <dependency>
       <groupId>org.projectlombok</groupId>
