@@ -10,7 +10,13 @@ public class RedisConst {
 
     public static final String WB_ERROR_OTHER = "weibo:error:other";
 
-    public static final String WB_LIST_HOTSEARCH = "weibo:list:hotsearch";
+    public static final String WB_HOTSEARCH_PUSH_LIST = "weibo:hotsearch:pushList";
+
+    public static final String WB_HOTSEARCH_PUSHED = "weibo:hotsearch:pushed:";
+
+    public static final String WB_HOTSEARCH_OLD = "weibo:hotsearch:old";
+
+    public static final String WB_HOTSEARCH_NEW = "weibo:hotsearch:new";
 
     public static final String ZSXQ_COOKIE_EXPIRED = "zsxq:cookie:expired";
 
