@@ -16,12 +16,6 @@ import java.util.Collection;
 @RestController
 public class HomeController {
 
-    @GetMapping("/")
-    public String home() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return "Hello, " + authentication.getName() + ", 后台即将上线，敬请期待！";
-    }
-
     @GetMapping("/a")
     public String a() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
