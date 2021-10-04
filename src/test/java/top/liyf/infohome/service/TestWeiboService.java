@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @author liyf
  * Created in 2021-05-25
@@ -20,4 +18,11 @@ class TestWeiboService {
     void getHotSearch() throws Exception {
         weiboService.getHotSearch();
     }
+
+    @Test
+    void parse() throws Exception {
+        weiboService.parse();
+    }
+
+
 }

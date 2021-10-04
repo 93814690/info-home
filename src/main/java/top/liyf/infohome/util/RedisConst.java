@@ -8,6 +8,8 @@ public class RedisConst {
 
     public static final String WB_COOKIE_EXPIRED = "weibo:cookie:expired";
 
+    public static final String WB_COOKIE_VISITOR = "weibo:cookie:visitor";
+
     public static final String WB_ERROR_OTHER = "weibo:error:other";
 
     public static final String WB_HOTSEARCH_PUSH_LIST = "weibo:hotsearch:pushList";

@@ -13,6 +13,7 @@ import top.liyf.infohome.feign.ChanifyClient;
 import top.liyf.infohome.model.weibo.HotSearchPush;
 import top.liyf.infohome.model.weibo.HotSearchV2;
 import top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch;
+import top.liyf.infohome.service.WeiboService;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
@@ -39,6 +40,13 @@ public class WeiboTask {
     private UserChanifyMapper userChanifyMapper;
     @Autowired
     private HotSearchPushMapper pushMapper;
+    @Autowired
+    private WeiboService weiboService;
+
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void getHotSearch() throws Exception {
+        weiboService.parse();
+    }
 
     @Scheduled(cron = "0 */1 7-23 * * ?")
     public void pushHotSearch() {
