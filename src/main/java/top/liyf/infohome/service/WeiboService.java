@@ -121,7 +121,7 @@ public class WeiboService {
      *
      * @author liyf
      */
-    public void parse() throws Exception {
+    public void getHotSearch() throws Exception {
         String url = "https://s.weibo.com/top/summary";
         String cookie = getVisitorCookie();
         Document doc = Jsoup.connect(url).header("cookie", cookie).get();

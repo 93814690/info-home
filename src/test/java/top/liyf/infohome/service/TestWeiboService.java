@@ -16,7 +16,7 @@ class TestWeiboService {
 
     @Test
     void parse() throws Exception {
-        weiboService.parse();
+        weiboService.getHotSearch();
     }
 
 

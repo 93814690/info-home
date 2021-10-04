@@ -43,11 +43,21 @@ public class WeiboTask {
     @Autowired
     private WeiboService weiboService;
 
+    /**
+     * 功能描述: 读取微博热搜
+     *
+     * @author liyf
+     */
     @Scheduled(cron = "0 */1 * * * ?")
     public void getHotSearch() throws Exception {
-        weiboService.parse();
+        weiboService.getHotSearch();
     }
 
+    /**
+     * 功能描述: 推送微博热搜
+     *
+     * @author liyf
+     */
     @Scheduled(cron = "0 */1 7-23 * * ?")
     public void pushHotSearch() {
         Object o = redisService.lPop(RedisConst.WB_HOTSEARCH_PUSH_LIST);
@@ -65,6 +75,12 @@ public class WeiboTask {
         }
     }
 
+    /**
+     * 功能描述: 推送方法
+     *
+     * @param list 热搜列表
+     * @author liyf
+     */
     private void push(ArrayList<HotSearchV2> list) {
         // 获取用户及推送规则
         List<UserSubscription> userList = userChanifyMapper.getUserSubscriptionWithHotSearch();
@@ -111,6 +127,13 @@ public class WeiboTask {
 
     }
 
+    /**
+     * 功能描述: 构造标题
+     *
+     * @param hotSearchV2
+     * @return java.lang.String
+     * @author liyf
+     */
     private String getTitle(HotSearchV2 hotSearchV2) {
         String emoticon = hotSearchV2.getEmoticon();
         String title = "微博 - ";
@@ -134,6 +157,14 @@ public class WeiboTask {
         return title;
     }
 
+    /**
+     * 功能描述: 判断是否推送
+     *
+     * @param hotSearchV2 热搜
+     * @param rule        推送规则
+     * @return boolean
+     * @author liyf
+     */
     private boolean judge(HotSearchV2 hotSearchV2, SubscriptionWeiboHotSearch rule) {
         if (rule.getRankingList() != 0 && rule.getRankingList() < hotSearchV2.getRank()) {
             return false;
