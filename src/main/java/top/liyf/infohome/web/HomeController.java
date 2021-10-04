@@ -20,7 +20,6 @@ public class HomeController {
     public String a() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        System.out.println("authorities = " + authorities);
         return authentication.getName();
     }
 

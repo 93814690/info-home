@@ -6,13 +6,12 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
 
 /**
  * @author liyf
  * Created in 2021-07-27
  */
-@Service
+//@Service
 public class Engine implements ApplicationContextAware, InitializingBean {
 
     private ApplicationContext context;

@@ -13,6 +13,7 @@ import top.liyf.infohome.feign.ChanifyClient;
 import top.liyf.infohome.model.weibo.HotSearchPush;
 import top.liyf.infohome.model.weibo.HotSearchV2;
 import top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch;
+import top.liyf.infohome.service.WeiboService;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
@@ -39,17 +40,24 @@ public class WeiboTask {
     private UserChanifyMapper userChanifyMapper;
     @Autowired
     private HotSearchPushMapper pushMapper;
+    @Autowired
+    private WeiboService weiboService;
+
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void getHotSearch() throws Exception {
+        weiboService.parse();
+    }
 
     @Scheduled(cron = "0 */1 7-23 * * ?")
     public void pushHotSearch() {
-        Object o = redisService.lPop(RedisConst.WB_LIST_HOTSEARCH);
+        Object o = redisService.lPop(RedisConst.WB_HOTSEARCH_PUSH_LIST);
         ArrayList<HotSearchV2> list = new ArrayList<>();
         while (o != null) {
             if (o instanceof HotSearchV2) {
                 HotSearchV2 hotSearchV2 = (HotSearchV2) o;
                 list.add(hotSearchV2);
             }
-            o = redisService.lPop(RedisConst.WB_LIST_HOTSEARCH);
+            o = redisService.lPop(RedisConst.WB_HOTSEARCH_PUSH_LIST);
         }
         if (list.size() > 0) {
             push(list);
@@ -61,10 +69,12 @@ public class WeiboTask {
         // 获取用户及推送规则
         List<UserSubscription> userList = userChanifyMapper.getUserSubscriptionWithHotSearch();
         for (HotSearchV2 hotSearchV2 : list) {
+            String key = RedisConst.WB_HOTSEARCH_PUSHED + hotSearchV2.getWord();
             // 判断及推送
             for (UserSubscription userSubscription : userList) {
-                HotSearchPush hotSearchPush = pushMapper.selectOneByUserIdAndWord(userSubscription.getUserId(), hotSearchV2.getWord());
-                if (hotSearchPush != null) {
+                String userId = userSubscription.getUserId();
+                Boolean pushed = redisService.sIsMember(key, userId);
+                if (pushed) {
                     continue;
                 }
                 ChanifyText text = null;
@@ -88,10 +98,11 @@ public class WeiboTask {
                 if (text != null) {
                     chanifyClient.text(text);
                     HotSearchPush push = new HotSearchPush();
-                    push.setUserId(userSubscription.getUserId());
+                    push.setUserId(userId);
                     push.setWord(hotSearchV2.getWord());
                     push.setPushTime(LocalDateTime.now());
                     pushMapper.insert(push);
+                    redisService.sAdd(key, userId);
                 }
 
             }
@@ -114,6 +125,8 @@ public class WeiboTask {
             title += " - [热] - ";
         } else if (state.equals(3)) {
             title += " - [沸] - ";
+        } else if (state.equals(4)) {
+            title += " - [爆] - ";
         } else {
             title += " - ";
         }
