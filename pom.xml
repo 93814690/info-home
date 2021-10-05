@@ -15,7 +15,7 @@
 
   <properties>
     <java.version>11</java.version>
-    <fly.push.version>1.0</fly.push.version>
+    <fly.push.version>1.1.0</fly.push.version>
     <fly.auth.api.version>1.0</fly.auth.api.version>
   </properties>
 
