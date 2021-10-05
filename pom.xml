@@ -5,7 +5,7 @@
   <parent>
     <artifactId>fly</artifactId>
     <groupId>top.liyf</groupId>
-    <version>1.0</version>
+    <version>1.0.1</version>
   </parent>
 
   <artifactId>info-home</artifactId>
