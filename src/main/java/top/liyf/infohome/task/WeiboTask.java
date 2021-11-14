@@ -1,7 +1,6 @@
 package top.liyf.infohome.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,16 +33,19 @@ import java.util.List;
 @Slf4j
 public class WeiboTask {
 
-    @Autowired
-    private RedisService redisService;
-    @Autowired
-    private ChanifyClient chanifyClient;
-    @Autowired
-    private UserChanifyMapper userChanifyMapper;
-    @Autowired
-    private HotSearchPushMapper pushMapper;
-    @Autowired
-    private WeiboService weiboService;
+    private final RedisService redisService;
+    private final ChanifyClient chanifyClient;
+    private final UserChanifyMapper userChanifyMapper;
+    private final HotSearchPushMapper pushMapper;
+    private final WeiboService weiboService;
+
+    public WeiboTask(RedisService redisService, ChanifyClient chanifyClient, UserChanifyMapper userChanifyMapper, HotSearchPushMapper pushMapper, WeiboService weiboService) {
+        this.redisService = redisService;
+        this.chanifyClient = chanifyClient;
+        this.userChanifyMapper = userChanifyMapper;
+        this.pushMapper = pushMapper;
+        this.weiboService = weiboService;
+    }
 
     /**
      * 功能描述: 读取微博热搜
@@ -60,7 +62,7 @@ public class WeiboTask {
      *
      * @author liyf
      */
-    @Scheduled(cron = "0 */1 7-23 * * ?")
+    @Scheduled(cron = "10 */1 7-23 * * ?")
     public void pushHotSearch() {
         Object o = redisService.lPop(RedisConst.WB_HOTSEARCH_PUSH_LIST);
         ArrayList<HotSearchV2> list = new ArrayList<>();
@@ -142,7 +144,7 @@ public class WeiboTask {
     /**
      * 功能描述: 构造标题
      *
-     * @param hotSearchV2
+     * @param hotSearchV2 微博热搜
      * @return java.lang.String
      * @author liyf
      */
