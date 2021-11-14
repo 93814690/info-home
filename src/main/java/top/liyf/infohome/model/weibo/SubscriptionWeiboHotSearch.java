@@ -20,5 +20,7 @@ public class SubscriptionWeiboHotSearch implements Serializable {
 
     private Boolean sound;
 
+    private String interruptionLevel;
+
     private static final long serialVersionUID = 1L;
 }
