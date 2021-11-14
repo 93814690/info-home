@@ -9,7 +9,9 @@
     <result column="ranking_list" jdbcType="INTEGER" property="rankingList"/>
     <result column="state" jdbcType="INTEGER" property="state"/>
     <result column="sound" jdbcType="BOOLEAN" property="sound"/>
+    <result column="interruption_level" jdbcType="VARCHAR" property="interruptionLevel"/>
   </resultMap>
+
   <resultMap id="JoinResultMap" type="top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch">
     <!--@mbg.generated-->
     <id column="subscription_weibo_hot_search_id" jdbcType="BIGINT" property="id"/>
@@ -17,18 +19,22 @@
     <result column="subscription_weibo_hot_search_ranking_list" jdbcType="INTEGER" property="rankingList"/>
     <result column="subscription_weibo_hot_search_state" jdbcType="INTEGER" property="state"/>
     <result column="subscription_weibo_hot_search_sound" jdbcType="BOOLEAN" property="sound"/>
+    <result column="subscription_weibo_hot_search_interruption_level" jdbcType="VARCHAR" property="interruptionLevel"/>
   </resultMap>
+
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, user_id, ranking_list, `state`, sound
+    id, user_id, ranking_list, `state`, sound, interruption_level
   </sql>
+
   <sql id="Join_Column_List">
     <!--@mbg.generated-->
     subscription_weibo_hot_search.id as subscription_weibo_hot_search_id, subscription_weibo_hot_search.user_id as
     subscription_weibo_hot_search_user_id,
     subscription_weibo_hot_search.ranking_list as subscription_weibo_hot_search_ranking_list,
     subscription_weibo_hot_search.`state` as subscription_weibo_hot_search_state, subscription_weibo_hot_search.sound as
-    subscription_weibo_hot_search_sound
+    subscription_weibo_hot_search_sound,
+    subscription_weibo_hot_search.interruption_level as subscription_weibo_hot_search_interruption_level
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -42,8 +48,8 @@
           parameterType="top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into subscription_weibo_hot_search (user_id, ranking_list, `state`,
-    sound)
+    sound, interruption_level)
     values (#{userId,jdbcType=VARCHAR}, #{rankingList,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
-    #{sound,jdbcType=BOOLEAN})
+    #{sound,jdbcType=BOOLEAN}, #{interruptionLevel,jdbcType=VARCHAR})
   </insert>
 </mapper>

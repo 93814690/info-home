@@ -14,6 +14,7 @@ import top.liyf.infohome.model.weibo.HotSearchPush;
 import top.liyf.infohome.model.weibo.HotSearchV2;
 import top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch;
 import top.liyf.infohome.service.WeiboService;
+import top.liyf.infohome.util.ChanifyConst;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
@@ -22,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -94,6 +96,7 @@ public class WeiboTask {
                     continue;
                 }
                 ChanifyText text = null;
+                HashSet<String> set = new HashSet<>();
                 for (SubscriptionWeiboHotSearch rule : userSubscription.getHotSearchRuleList()) {
                     if (judge(hotSearchV2, rule)) {
                         if (text == null) {
@@ -109,9 +112,18 @@ public class WeiboTask {
                         if (rule.getSound()) {
                             text.setSound(1);
                         }
+                        set.add(rule.getInterruptionLevel());
                     }
                 }
                 if (text != null) {
+                    // 设置中断级别
+                    if (set.contains(ChanifyConst.INTERRUPTION_TIME_SENSITIVE)) {
+                        text.setInterruptionLevel(ChanifyConst.INTERRUPTION_TIME_SENSITIVE);
+                    } else if (set.contains(ChanifyConst.INTERRUPTION_ACTIVE)) {
+                        text.setInterruptionLevel(ChanifyConst.INTERRUPTION_ACTIVE);
+                    } else {
+                        text.setInterruptionLevel(ChanifyConst.INTERRUPTION_PASSIVE);
+                    }
                     chanifyClient.text(text);
                     HotSearchPush push = new HotSearchPush();
                     push.setUserId(userId);
