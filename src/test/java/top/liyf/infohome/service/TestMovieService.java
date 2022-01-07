@@ -22,4 +22,9 @@ class TestMovieService {
     void getMovieByDouban() throws IOException {
         movieService.getMovieByDouban(34884712);
     }
+
+    @Test
+    void getLatestMovie() throws Exception {
+        movieService.getLatestMovie();
+    }
 }

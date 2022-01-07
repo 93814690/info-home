@@ -1,17 +1,29 @@
 package top.liyf.infohome.service;
 
 import com.alibaba.druid.util.StringUtils;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import top.liyf.fly.common.core.util.HttpClientResult;
+import top.liyf.fly.common.core.util.HttpUtils;
 import top.liyf.infohome.dao.MovieMapper;
+import top.liyf.infohome.model.movie.DbResponse;
+import top.liyf.infohome.model.movie.DbSubject;
 import top.liyf.infohome.model.weibo.Movie;
+import top.liyf.infohome.util.RedisConst;
+import top.liyf.redis.service.RedisService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -19,12 +31,35 @@ import java.util.List;
  * Created in 2022-01-03
  */
 @Service
+@Slf4j
 public class MovieService {
 
     private final MovieMapper movieMapper;
+    private final RedisService redisService;
 
-    public MovieService(MovieMapper movieMapper) {
+    public MovieService(MovieMapper movieMapper, RedisService redisService) {
         this.movieMapper = movieMapper;
+        this.redisService = redisService;
+    }
+
+    public void getLatestMovie() throws Exception {
+        getLatestMovie(0);
+    }
+
+    public void getLatestMovie(int pageStart) throws Exception {
+        String url = "https://movie.douban.com/j/search_subjects?type=movie&tag=%E6%9C%80%E6%96%B0&page_limit=50&page_start=" + pageStart;
+        HashMap<String, String> header = new HashMap<>(8);
+        header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
+        HttpClientResult result = HttpUtils.doGet(url, header, null);
+        log.info("获取最新电影: {}", result);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        DbResponse dbResponse = mapper.readValue(result.getContent(), DbResponse.class);
+        HashSet<Integer> set = new HashSet<>();
+        for (DbSubject subject : dbResponse.getSubjects()) {
+            set.add(subject.getId());
+        }
+        redisService.sAdd(RedisConst.MV_INFO_SET, set.toArray());
     }
 
     public void getMovieByDouban(Integer dbId) throws IOException {

@@ -21,4 +21,6 @@ public class RedisConst {
     public static final String ZSXQ_COOKIE_EXPIRED = "zsxq:cookie:expired";
 
     public static final String ZSXQ_ERROR_OTHER = "zsxq:error:other";
+
+    public static final String MV_INFO_SET = "movie:infoSet";
 }
