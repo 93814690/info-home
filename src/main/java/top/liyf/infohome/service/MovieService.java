@@ -13,14 +13,17 @@ import org.springframework.stereotype.Service;
 import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
 import top.liyf.infohome.dao.MovieMapper;
+import top.liyf.infohome.dao.MovieRatingMapper;
 import top.liyf.infohome.model.movie.DbResponse;
 import top.liyf.infohome.model.movie.DbSubject;
 import top.liyf.infohome.model.weibo.Movie;
+import top.liyf.infohome.model.weibo.MovieRating;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,10 +38,12 @@ public class MovieService {
 
     private final MovieMapper movieMapper;
     private final RedisService redisService;
+    private final MovieRatingMapper ratingMapper;
 
-    public MovieService(MovieMapper movieMapper, RedisService redisService) {
+    public MovieService(MovieMapper movieMapper, RedisService redisService, MovieRatingMapper ratingMapper) {
         this.movieMapper = movieMapper;
         this.redisService = redisService;
+        this.ratingMapper = ratingMapper;
     }
 
     public void getLatestMovie() throws Exception {
@@ -62,6 +67,7 @@ public class MovieService {
     }
 
     public void getMovieByDouban(Integer dbId) throws IOException {
+        log.info("update by dbId: {}", dbId);
         Movie movie = movieMapper.selectOneByDbCode(dbId);
         if (movie == null) {
             movie = new Movie();
@@ -85,21 +91,21 @@ public class MovieService {
         movie.setInitialReleaseDate(elementsToString(initialReleaseDateElements));
 
         Element runtimeElement = doc.selectFirst("#info span[property=v:runtime]");
-        String runtime = runtimeElement.attr("content");
-        movie.setRuntime(Integer.valueOf(runtime));
-
-        Elements infoElements = doc.select("#info");
-        String info = infoElements.text();
-        String country = StringUtils.subString(info, "制片国家/地区:", "语言").trim();
-        movie.setCountry(country);
-        String otherTitle = StringUtils.subString(info, "又名:", "IMDb");
-        if (org.springframework.util.StringUtils.hasText(otherTitle)) {
-            movie.setOtherTitle(otherTitle.trim());
+        if (runtimeElement != null) {
+            String runtime = runtimeElement.attr("content");
+            movie.setRuntime(Integer.valueOf(runtime));
         }
 
-        List<TextNode> textNodes = infoElements.first().textNodes();
-        String imdb = textNodes.get(textNodes.size() - 2).text().trim();
-        movie.setImdbCode(imdb);
+        Elements infoElements = doc.select("#info");
+        Elements pl = infoElements.select(".pl");
+        ArrayList<String> plList = new ArrayList<>();
+        for (Element element : pl) {
+            plList.add(element.text());
+        }
+        String info = infoElements.text();
+        movie.setCountry(getInfoByName(info, plList, "制片国家/地区:"));
+        movie.setOtherTitle(getInfoByName(info, plList, "又名:"));
+        movie.setImdbCode(getInfoByName(info, plList, "IMDb:"));
 
         movie.setUpdateTime(LocalDateTime.now());
 
@@ -108,6 +114,53 @@ public class MovieService {
         } else {
             movieMapper.updateByPrimaryKeySelective(movie);
         }
+
+        // update rating
+        MovieRating rating = ratingMapper.selectByPrimaryKey(movie.getId());
+        if (rating == null) {
+            rating = new MovieRating();
+        }
+        String dbRating = doc.select("#interest_sectl > div > div.rating_self.clearfix > strong").text();
+        if (org.springframework.util.StringUtils.hasText(dbRating)) {
+            rating.setDbRating(Double.valueOf(dbRating));
+            String dbRatingPeople = doc.select("#interest_sectl > div > div.rating_self.clearfix > div > div.rating_sum > a > span").text();
+            rating.setDbRatingPeople(Integer.valueOf(dbRatingPeople));
+        } else {
+            rating.setDbRating(null);
+            rating.setDbRatingPeople(null);
+        }
+
+        rating.setUpdateTime(LocalDateTime.now());
+
+        if (rating.getMovieId() == null) {
+            rating.setMovieId(movie.getId());
+            ratingMapper.insert(rating);
+        } else {
+            ratingMapper.updateByPrimaryKeySelective(rating);
+        }
+    }
+
+    /**
+     * 功能描述: 获取内容的信息
+     * 
+     * @param info
+     * @param plList
+     * @param name
+     * @return java.lang.String
+     * @author liyf
+     */
+    private String getInfoByName(String info, ArrayList<String> plList, String name) {
+        String value;
+        if (plList.contains(name)) {
+            int index = plList.indexOf(name);
+            if (index == plList.size() - 1) {
+                value = StringUtils.subString(info, name, null);
+            } else {
+                value = StringUtils.subString(info, name, plList.get(index + 1));
+            }
+            return value.trim();
+        }
+        return null;
     }
 
     private String elementsToString(Elements genres) {
