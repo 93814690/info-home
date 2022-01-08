@@ -21,7 +21,6 @@ import top.liyf.redis.service.RedisService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -93,8 +92,10 @@ public class MovieService {
         String info = infoElements.text();
         String country = StringUtils.subString(info, "制片国家/地区:", "语言").trim();
         movie.setCountry(country);
-        String otherTitle = StringUtils.subString(info, "又名:", "IMDb").trim();
-        movie.setOtherTitle(otherTitle);
+        String otherTitle = StringUtils.subString(info, "又名:", "IMDb");
+        if (org.springframework.util.StringUtils.hasText(otherTitle)) {
+            movie.setOtherTitle(otherTitle.trim());
+        }
 
         List<TextNode> textNodes = infoElements.first().textNodes();
         String imdb = textNodes.get(textNodes.size() - 2).text().trim();
