@@ -7,16 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
+import top.liyf.infohome.dao.MovieCelebrityMapper;
 import top.liyf.infohome.dao.MovieMapper;
 import top.liyf.infohome.dao.MovieRatingMapper;
 import top.liyf.infohome.model.movie.DbResponse;
 import top.liyf.infohome.model.movie.DbSubject;
 import top.liyf.infohome.model.weibo.Movie;
+import top.liyf.infohome.model.weibo.MovieCelebrity;
 import top.liyf.infohome.model.weibo.MovieRating;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
@@ -26,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * @author liyf
@@ -39,11 +39,13 @@ public class MovieService {
     private final MovieMapper movieMapper;
     private final RedisService redisService;
     private final MovieRatingMapper ratingMapper;
+    private final MovieCelebrityMapper celebrityMapper;
 
-    public MovieService(MovieMapper movieMapper, RedisService redisService, MovieRatingMapper ratingMapper) {
+    public MovieService(MovieMapper movieMapper, RedisService redisService, MovieRatingMapper ratingMapper, MovieCelebrityMapper celebrityMapper) {
         this.movieMapper = movieMapper;
         this.redisService = redisService;
         this.ratingMapper = ratingMapper;
+        this.celebrityMapper = celebrityMapper;
     }
 
     public void getLatestMovie() throws Exception {
@@ -114,6 +116,31 @@ public class MovieService {
         } else {
             movieMapper.updateByPrimaryKeySelective(movie);
         }
+
+        // people
+        ArrayList<MovieCelebrity> celebrityArrayList = new ArrayList<>();
+        Elements directorElements = doc.select("#info a[rel=v:directedBy]");
+        for (Element element : directorElements) {
+            String href = element.attr("href");
+            href = href.replace("/celebrity/", "").replace("/", "");
+            MovieCelebrity celebrity = new MovieCelebrity();
+            celebrity.setType(0);
+            celebrity.setMovieId(movie.getId());
+            celebrity.setCelebrityId(Long.valueOf(href));
+            celebrityArrayList.add(celebrity);
+        }
+        Elements actorElements = doc.select("#info a[rel=v:starring]");
+        for (Element element : actorElements) {
+            String href = element.attr("href");
+            href = href.replace("/celebrity/", "").replace("/", "");            MovieCelebrity celebrity = new MovieCelebrity();
+            celebrity.setType(2);
+            celebrity.setMovieId(movie.getId());
+            celebrity.setCelebrityId(Long.valueOf(href));
+            celebrityArrayList.add(celebrity);
+        }
+
+        celebrityMapper.deleteByMovieId(movie.getId());
+        celebrityMapper.insertList(celebrityArrayList);
 
         // update rating
         MovieRating rating = ratingMapper.selectByPrimaryKey(movie.getId());
