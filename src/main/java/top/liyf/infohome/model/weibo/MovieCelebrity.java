@@ -15,6 +15,8 @@ public class MovieCelebrity implements Serializable {
 
     private Long celebrityId;
 
+    private String celebrityName;
+
     /**
      * 0:导演
      * 1:编剧

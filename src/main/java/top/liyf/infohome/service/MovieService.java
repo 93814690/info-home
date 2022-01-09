@@ -84,13 +84,16 @@ public class MovieService {
         movie.setOriginalTitle(originalTitle);
         String year = doc.selectXpath("//*[@id=\"content\"]/h1/span[2]").text();
         year = year.replace("(", "").replace(")", "");
+        // todo
         movie.setYear(Integer.valueOf(year));
 
         Elements genres = doc.select("#info span[property=v:genre]");
         movie.setGenre(elementsToString(genres));
 
         Elements initialReleaseDateElements = doc.select("#info span[property=v:initialReleaseDate]");
-        movie.setInitialReleaseDate(elementsToString(initialReleaseDateElements));
+        if (org.springframework.util.StringUtils.hasText(initialReleaseDateElements.text())) {
+            movie.setInitialReleaseDate(elementsToString(initialReleaseDateElements));
+        }
 
         Element runtimeElement = doc.selectFirst("#info span[property=v:runtime]");
         if (runtimeElement != null) {
@@ -126,7 +129,10 @@ public class MovieService {
             MovieCelebrity celebrity = new MovieCelebrity();
             celebrity.setType(0);
             celebrity.setMovieId(movie.getId());
-            celebrity.setCelebrityId(Long.valueOf(href));
+            if (!href.contains("search")) {
+                celebrity.setCelebrityId(Long.valueOf(href));
+            }
+            celebrity.setCelebrityName(element.text());
             celebrityArrayList.add(celebrity);
         }
         Elements actorElements = doc.select("#info a[rel=v:starring]");
@@ -135,7 +141,10 @@ public class MovieService {
             href = href.replace("/celebrity/", "").replace("/", "");            MovieCelebrity celebrity = new MovieCelebrity();
             celebrity.setType(2);
             celebrity.setMovieId(movie.getId());
-            celebrity.setCelebrityId(Long.valueOf(href));
+            if (!href.contains("search")) {
+                celebrity.setCelebrityId(Long.valueOf(href));
+            }
+            celebrity.setCelebrityName(element.text());
             celebrityArrayList.add(celebrity);
         }
 

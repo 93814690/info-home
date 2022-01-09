@@ -1,9 +1,10 @@
 package top.liyf.infohome.dao;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import top.liyf.infohome.model.weibo.MovieCelebrity;
+
+import java.util.List;
 
 /**
  * @author liyf
@@ -17,9 +18,9 @@ public interface MovieCelebrityMapper {
 
     int updateByPrimaryKeySelective(MovieCelebrity record);
 
-    int deleteByMovieId(@Param("movieId")Long movieId);
+    int deleteByMovieId(@Param("movieId") Long movieId);
 
-    int insertList(@Param("list")List<MovieCelebrity> list);
+    int insertList(@Param("list") List<MovieCelebrity> list);
 
 
 }

@@ -7,11 +7,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="movie_id" jdbcType="BIGINT" property="movieId" />
     <result column="celebrity_id" jdbcType="BIGINT" property="celebrityId" />
+    <result column="celebrity_name" jdbcType="VARCHAR" property="celebrityName" />
     <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, movie_id, celebrity_id, `type`
+    id, movie_id, celebrity_id, celebrity_name, `type`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -22,10 +23,10 @@
   </select>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.liyf.infohome.model.weibo.MovieCelebrity" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into movie_celebrity (movie_id, celebrity_id, `type`
-      )
-    values (#{movieId,jdbcType=BIGINT}, #{celebrityId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}
-      )
+    insert into movie_celebrity (movie_id, celebrity_id, celebrity_name, 
+      `type`)
+    values (#{movieId,jdbcType=BIGINT}, #{celebrityId,jdbcType=BIGINT}, #{celebrityName,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.weibo.MovieCelebrity">
     <!--@mbg.generated-->
@@ -36,6 +37,9 @@
       </if>
       <if test="celebrityId != null">
         celebrity_id = #{celebrityId,jdbcType=BIGINT},
+      </if>
+      <if test="celebrityName != null">
+        celebrity_name = #{celebrityName,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
         `type` = #{type,jdbcType=INTEGER},
@@ -55,12 +59,14 @@
     INSERT INTO movie_celebrity(
     movie_id,
     celebrity_id,
+    celebrity_name,
     type
     )VALUES
     <foreach collection="list" item="element" index="index" separator=",">
       (
       #{element.movieId,jdbcType=BIGINT},
       #{element.celebrityId,jdbcType=BIGINT},
+      #{element.celebrityName,jdbcType=VARCHAR},
       #{element.type,jdbcType=INTEGER}
       )
     </foreach>
