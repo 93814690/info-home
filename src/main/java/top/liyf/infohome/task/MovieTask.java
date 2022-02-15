@@ -33,7 +33,9 @@ public class MovieTask {
     @Scheduled(cron = "*/30 * * * * ?")
     public void getMovieInfo() throws IOException {
         Object dbId = redisService.sPop(RedisConst.MV_INFO_SET);
-        movieService.getMovieByDouban((Integer) dbId);
+        if (dbId != null) {
+            movieService.getMovieByDouban((Integer) dbId);
+        }
     }
 
     //@Scheduled(cron = "*/30 * * * * ?")
