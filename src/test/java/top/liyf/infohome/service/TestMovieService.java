@@ -20,7 +20,7 @@ class TestMovieService {
 
     @Test
     void getMovieByDouban() throws IOException {
-        movieService.getMovieByDouban(35441797);
+        movieService.getMovieByDouban(30394576);
     }
 
     @Test

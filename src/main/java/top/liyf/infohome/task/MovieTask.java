@@ -30,9 +30,19 @@ public class MovieTask {
         movieService.getLatestMovie();
     }
 
-    @Scheduled(cron = "*/15 * * * * ?")
+    @Scheduled(cron = "*/30 * * * * ?")
     public void getMovieInfo() throws IOException {
         Object dbId = redisService.sPop(RedisConst.MV_INFO_SET);
         movieService.getMovieByDouban((Integer) dbId);
+    }
+
+    //@Scheduled(cron = "*/30 * * * * ?")
+    public void initMovie() throws Exception {
+        Integer startPage = (Integer) redisService.get("startPage");
+        if (startPage == null) {
+            startPage = 0;
+        }
+        movieService.getLatestMovie(startPage);
+        redisService.set("startPage", startPage + 50);
     }
 }
