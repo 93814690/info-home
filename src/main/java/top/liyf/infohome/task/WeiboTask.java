@@ -134,11 +134,8 @@ public class WeiboTask {
                     pushMapper.insert(push);
                     redisService.sAdd(key, userId);
                 }
-
             }
-
         }
-
     }
 
     /**
@@ -186,7 +183,7 @@ public class WeiboTask {
         if (rule.getState() != 0 && !rule.getState().equals(hotSearchV2.getState())) {
             return false;
         }
-        if (rule.getMinNum() != 0 && rule.getMinNum() < hotSearchV2.getNum()) {
+        if (rule.getMinNum() != 0 && rule.getMinNum() > hotSearchV2.getNum()) {
             return false;
         }
         return true;
