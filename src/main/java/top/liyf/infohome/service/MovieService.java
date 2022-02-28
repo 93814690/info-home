@@ -82,7 +82,7 @@ public class MovieService {
         redisService.sAdd(RedisConst.MV_INFO_SET, list.toArray());
         log.info("=== 获取豆瓣 TOP 250 结束");
     }
-    
+
     public void getTop250ListByPage(String url, List<Long> list) throws IOException {
         Document doc = Jsoup.connect(url).get();
         Elements elements = doc.select(".hd > a");
@@ -163,7 +163,8 @@ public class MovieService {
         Elements actorElements = doc.select("#info a[rel=v:starring]");
         for (Element element : actorElements) {
             String href = element.attr("href");
-            href = href.replace("/celebrity/", "").replace("/", "");            MovieCelebrity celebrity = new MovieCelebrity();
+            href = href.replace("/celebrity/", "").replace("/", "");
+            MovieCelebrity celebrity = new MovieCelebrity();
             celebrity.setType(2);
             celebrity.setMovieId(movie.getId());
             if (!href.contains("search")) {
@@ -203,7 +204,7 @@ public class MovieService {
 
     /**
      * 功能描述: 获取内容的信息
-     * 
+     *
      * @param info
      * @param plList
      * @param name
