@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.liyf.infohome.dao.MovieRatingMapper">
+  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.weibo.MovieRating">
+    <!--@mbg.generated-->
+    <!--@Table movie_rating-->
+    <id column="movie_id" jdbcType="BIGINT" property="movieId" />
+    <result column="db_rating" jdbcType="DOUBLE" property="dbRating" />
+    <result column="db_rating_people" jdbcType="INTEGER" property="dbRatingPeople" />
+    <result column="imdb_rating" jdbcType="DOUBLE" property="imdbRating" />
+    <result column="imdb_rating_people" jdbcType="INTEGER" property="imdbRatingPeople" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    movie_id, db_rating, db_rating_people, imdb_rating, imdb_rating_people, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from movie_rating
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </select>
+  <insert id="insert" parameterType="top.liyf.infohome.model.weibo.MovieRating">
+    <!--@mbg.generated-->
+    insert into movie_rating (movie_id, db_rating, db_rating_people, 
+      imdb_rating, imdb_rating_people, update_time
+      )
+    values (#{movieId,jdbcType=BIGINT}, #{dbRating,jdbcType=DOUBLE}, #{dbRatingPeople,jdbcType=INTEGER}, 
+      #{imdbRating,jdbcType=DOUBLE}, #{imdbRatingPeople,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.weibo.MovieRating">
+    <!--@mbg.generated-->
+    update movie_rating
+    <set>
+      <if test="dbRating != null">
+        db_rating = #{dbRating,jdbcType=DOUBLE},
+      </if>
+      <if test="dbRatingPeople != null">
+        db_rating_people = #{dbRatingPeople,jdbcType=INTEGER},
+      </if>
+      <if test="imdbRating != null">
+        imdb_rating = #{imdbRating,jdbcType=DOUBLE},
+      </if>
+      <if test="imdbRatingPeople != null">
+        imdb_rating_people = #{imdbRatingPeople,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where movie_id = #{movieId,jdbcType=BIGINT}
+  </update>
+</mapper>

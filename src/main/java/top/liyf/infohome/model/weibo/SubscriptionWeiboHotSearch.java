@@ -1,8 +1,7 @@
 package top.liyf.infohome.model.weibo;
 
-import lombok.Data;
-
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * @author liyf
@@ -21,6 +20,11 @@ public class SubscriptionWeiboHotSearch implements Serializable {
     private Boolean sound;
 
     private String interruptionLevel;
+
+    /**
+     * 最小搜索量
+     */
+    private Long minNum;
 
     private static final long serialVersionUID = 1L;
 }
