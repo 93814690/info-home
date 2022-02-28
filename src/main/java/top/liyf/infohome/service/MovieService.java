@@ -24,9 +24,7 @@ import top.liyf.redis.service.RedisService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author liyf
@@ -66,6 +64,33 @@ public class MovieService {
             set.add(subject.getId());
         }
         redisService.sAdd(RedisConst.MV_INFO_SET, set.toArray());
+    }
+
+    public void getTop250() throws Exception {
+        log.info("=== 开始获取豆瓣 TOP 250");
+        ArrayList<Long> list = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 250; i += 25) {
+            String url = "https://movie.douban.com/top250?start=" + i + "&filter=";
+            getTop250ListByPage(url, list);
+
+            // sleep 30 ~ 40 s
+            Thread.sleep(30000);
+            int nextInt = random.nextInt(10000);
+            Thread.sleep(nextInt);
+        }
+        redisService.sAdd(RedisConst.MV_INFO_SET, list.toArray());
+        log.info("=== 获取豆瓣 TOP 250 结束");
+    }
+
+    public void getTop250ListByPage(String url, List<Long> list) throws IOException {
+        Document doc = Jsoup.connect(url).get();
+        Elements elements = doc.select(".hd > a");
+        for (Element element : elements) {
+            String href = element.attr("href");
+            href = href.replace("https://movie.douban.com/subject/", "").replace("/", "");
+            list.add(Long.valueOf(href));
+        }
     }
 
     public void getMovieByDouban(Integer dbId) throws IOException {
@@ -138,7 +163,8 @@ public class MovieService {
         Elements actorElements = doc.select("#info a[rel=v:starring]");
         for (Element element : actorElements) {
             String href = element.attr("href");
-            href = href.replace("/celebrity/", "").replace("/", "");            MovieCelebrity celebrity = new MovieCelebrity();
+            href = href.replace("/celebrity/", "").replace("/", "");
+            MovieCelebrity celebrity = new MovieCelebrity();
             celebrity.setType(2);
             celebrity.setMovieId(movie.getId());
             if (!href.contains("search")) {
@@ -178,7 +204,7 @@ public class MovieService {
 
     /**
      * 功能描述: 获取内容的信息
-     * 
+     *
      * @param info
      * @param plList
      * @param name

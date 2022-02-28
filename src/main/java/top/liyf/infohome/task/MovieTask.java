@@ -30,6 +30,11 @@ public class MovieTask {
         movieService.getLatestMovie();
     }
 
+    @Scheduled(cron = "0 30 7 1 * ?")
+    public void getTop250() throws Exception {
+        movieService.getTop250();
+    }
+
     @Scheduled(cron = "*/30 * * * * ?")
     public void getMovieInfo() throws IOException {
         Object dbId = redisService.sPop(RedisConst.MV_INFO_SET);
