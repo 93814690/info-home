@@ -116,9 +116,7 @@ public class MovieService {
         movie.setGenre(elementsToString(genres));
 
         Elements initialReleaseDateElements = doc.select("#info span[property=v:initialReleaseDate]");
-        if (org.springframework.util.StringUtils.hasText(initialReleaseDateElements.text())) {
-            movie.setInitialReleaseDate(elementsToString(initialReleaseDateElements));
-        }
+        movie.setInitialReleaseDate(elementsToString(initialReleaseDateElements));
 
         Element runtimeElement = doc.selectFirst("#info span[property=v:runtime]");
         if (runtimeElement != null) {
@@ -225,10 +223,13 @@ public class MovieService {
         return null;
     }
 
-    private String elementsToString(Elements genres) {
+    private String elementsToString(Elements elements) {
+        if (elements.size() == 0) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
-        for (Element genre : genres) {
-            sb.append(genre.text()).append(",");
+        for (Element element : elements) {
+            sb.append(element.text()).append(",");
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
