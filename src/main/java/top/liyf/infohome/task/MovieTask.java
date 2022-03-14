@@ -25,7 +25,7 @@ public class MovieTask {
         this.redisService = redisService;
     }
 
-    @Scheduled(cron = "0 30 6 * * ?")
+    @Scheduled(cron = "0 30 6 ? * MON")
     public void getLatestMovie() throws Exception {
         movieService.getLatestMovie();
     }
