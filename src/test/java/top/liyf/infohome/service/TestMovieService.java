@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author liyf
@@ -21,7 +18,7 @@ class TestMovieService {
 
     @Test
     void getMovieByDouban() throws IOException {
-        movieService.getMovieByDouban(30394576);
+        movieService.getMovieByDouban(34868380);
     }
 
     @Test

@@ -8,6 +8,7 @@ import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 /**
  * @author liyf
@@ -25,7 +26,7 @@ public class MovieTask {
         this.redisService = redisService;
     }
 
-    @Scheduled(cron = "0 30 6 * * ?")
+    @Scheduled(cron = "0 30 6 ? * MON")
     public void getLatestMovie() throws Exception {
         movieService.getLatestMovie();
     }
@@ -39,7 +40,13 @@ public class MovieTask {
     public void getMovieInfo() throws IOException {
         Object dbId = redisService.sPop(RedisConst.MV_INFO_SET);
         if (dbId != null) {
-            movieService.getMovieByDouban((Integer) dbId);
+            try {
+                movieService.getMovieByDouban((Integer) dbId);
+            } catch (SocketTimeoutException e) {
+                // 超时后重新加入获取列表
+                log.info("add " + dbId);
+                redisService.sAdd(RedisConst.MV_INFO_SET, dbId);
+            }
         }
     }
 
