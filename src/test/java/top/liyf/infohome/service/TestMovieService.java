@@ -31,4 +31,9 @@ class TestMovieService {
         movieService.getTop250();
 
     }
+
+    @Test
+    void getByTag() throws Exception {
+        boolean byTag = movieService.getByTag("电影", "剧情", "中国大陆", 2022, 20000);
+    }
 }
