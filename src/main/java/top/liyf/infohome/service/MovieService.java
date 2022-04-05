@@ -83,8 +83,19 @@ public class MovieService {
 
     public boolean getByTag(String tags, String genres, String countries, int year, int start) throws Exception {
         log.info("tag:{},genres:{},countries:{},year:{},start:{}", tags, genres, countries, year, start);
-        String url = "https://movie.douban.com/j/new_search_subjects?";
-        String param = "sort=S&range=0,10" + "&tags=" + tags + "&start=" + start + "&genres=" + genres + "&countries=" + countries + "&year_range=" + year + "," + year;
+        String url = "https://movie.douban.com/j/new_search_subjects?sort=S&range=0,10";
+        String param = "";
+        if (!"*".equals(tags)) {
+            param += "&tags=" + tags;
+        }
+        param += "&start=" + start;
+        if (!"*".equals(genres)) {
+            param += "&genres=" + genres;
+        }
+        if (!"*".equals(countries)) {
+            param += "&countries=" + countries;
+        }
+        param += "&year_range=" + year + "," + year;
         url += URLUtil.encode(param);
         HashMap<String, String> header = new HashMap<>(8);
         header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
