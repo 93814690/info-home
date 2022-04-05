@@ -215,8 +215,10 @@ public class MovieService {
             celebrityArrayList.add(celebrity);
         }
 
-        celebrityMapper.deleteByMovieId(movie.getId());
-        celebrityMapper.insertList(celebrityArrayList);
+        if (celebrityArrayList.size() > 0) {
+            celebrityMapper.deleteByMovieId(movie.getId());
+            celebrityMapper.insertList(celebrityArrayList);
+        }
 
         // update rating
         MovieRating rating = ratingMapper.selectByPrimaryKey(movie.getId());
