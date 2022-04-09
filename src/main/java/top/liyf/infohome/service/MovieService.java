@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 import top.liyf.fly.common.core.util.HttpClientResult;
 import top.liyf.fly.common.core.util.HttpUtils;
 import top.liyf.infohome.dao.MovieCelebrityMapper;
@@ -83,23 +84,24 @@ public class MovieService {
 
     public boolean getByTag(String tags, String genres, String countries, int year, int start) throws Exception {
         log.info("tag:{},genres:{},countries:{},year:{},start:{}", tags, genres, countries, year, start);
-        String url = "https://movie.douban.com/j/new_search_subjects?sort=S&range=0,10";
-        String param = "";
+        UriComponentsBuilder url = UriComponentsBuilder.fromHttpUrl("https://movie.douban.com/j/new_search_subjects");
+        url.queryParam("sort", "S");
+        url.queryParam("range", "1,10");
         if (!"*".equals(tags)) {
-            param += "&tags=" + tags;
+            url.queryParam("tags", tags);
         }
-        param += "&start=" + start;
+        url.queryParam("start", start);
         if (!"*".equals(genres)) {
-            param += "&genres=" + genres;
+            url.queryParam("genres", genres);
         }
         if (!"*".equals(countries)) {
-            param += "&countries=" + countries;
+            url.queryParam("countries", countries);
         }
-        param += "&year_range=" + year + "," + year;
-        url += URLUtil.encode(param);
+        url.queryParam("year_range", year + "," + year);
+
         HashMap<String, String> header = new HashMap<>(8);
         header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
-        HttpClientResult result = HttpUtils.doGet(url, header, null);
+        HttpClientResult result = HttpUtils.doGet(url.build().encode().toString(), header, null);
         log.info("result: {}", result);
 
         JSONObject jsonObject = JSONUtil.parseObj(result.getContent());
