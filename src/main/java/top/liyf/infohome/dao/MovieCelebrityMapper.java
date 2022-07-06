@@ -2,7 +2,7 @@ package top.liyf.infohome.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import top.liyf.infohome.model.weibo.MovieCelebrity;
+import top.liyf.infohome.model.movie.MovieCelebrity;
 
 import java.util.List;
 

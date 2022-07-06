@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.liyf.infohome.dao.MovieRatingMapper">
-  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.weibo.MovieRating">
+  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.movie.MovieRating">
     <!--@mbg.generated-->
     <!--@Table movie_rating-->
     <id column="movie_id" jdbcType="BIGINT" property="movieId" />
@@ -22,7 +22,7 @@
     from movie_rating
     where movie_id = #{movieId,jdbcType=BIGINT}
   </select>
-  <insert id="insert" parameterType="top.liyf.infohome.model.weibo.MovieRating">
+  <insert id="insert" parameterType="top.liyf.infohome.model.movie.MovieRating">
     <!--@mbg.generated-->
     insert into movie_rating (movie_id, db_rating, db_rating_people, 
       imdb_rating, imdb_rating_people, update_time
@@ -31,7 +31,7 @@
       #{imdbRating,jdbcType=DOUBLE}, #{imdbRatingPeople,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.weibo.MovieRating">
+  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.movie.MovieRating">
     <!--@mbg.generated-->
     update movie_rating
     <set>

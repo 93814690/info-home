@@ -18,7 +18,7 @@ class TestMovieService {
 
     @Test
     void getMovieByDouban() throws IOException {
-        movieService.getMovieByDouban(34868380);
+        movieService.getMovieByDouban(35371144);
     }
 
     @Test
@@ -30,5 +30,10 @@ class TestMovieService {
     void getTop250() throws Exception {
         movieService.getTop250();
 
+    }
+
+    @Test
+    void getByTag() throws Exception {
+        boolean byTag = movieService.getByTag("电影", "剧情", "中国大陆", 2022, 20000);
     }
 }

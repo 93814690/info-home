@@ -1,7 +1,7 @@
 package top.liyf.infohome.dao;
 
 import org.apache.ibatis.annotations.Mapper;
-import top.liyf.infohome.model.weibo.MovieRating;
+import top.liyf.infohome.model.movie.MovieRating;
 
 /**
  * 
