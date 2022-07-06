@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.liyf.infohome.dao.MovieCelebrityMapper">
-  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.weibo.MovieCelebrity">
+  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.movie.MovieCelebrity">
     <!--@mbg.generated-->
     <!--@Table movie_celebrity-->
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -21,14 +21,14 @@
     from movie_celebrity
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.liyf.infohome.model.weibo.MovieCelebrity" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.liyf.infohome.model.movie.MovieCelebrity" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into movie_celebrity (movie_id, celebrity_id, celebrity_name, 
       `type`)
     values (#{movieId,jdbcType=BIGINT}, #{celebrityId,jdbcType=BIGINT}, #{celebrityName,jdbcType=VARCHAR}, 
       #{type,jdbcType=INTEGER})
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.weibo.MovieCelebrity">
+  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.movie.MovieCelebrity">
     <!--@mbg.generated-->
     update movie_celebrity
     <set>

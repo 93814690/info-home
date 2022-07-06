@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.liyf.infohome.dao.MovieMapper">
-  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.weibo.Movie">
+  <resultMap id="BaseResultMap" type="top.liyf.infohome.model.movie.Movie">
     <!--@mbg.generated-->
     <!--@Table movie-->
     <id column="id" jdbcType="BIGINT" property="id"/>
@@ -24,7 +24,7 @@
     country, initial_release_date, runtime, mpaa_rating, update_time
   </sql>
 
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.liyf.infohome.model.weibo.Movie"
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.liyf.infohome.model.movie.Movie"
           useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into movie (imdb_code, db_code, chinese_title,
@@ -37,7 +37,7 @@
             #{runtime,jdbcType=INTEGER}, #{mpaaRating,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.weibo.Movie">
+  <update id="updateByPrimaryKeySelective" parameterType="top.liyf.infohome.model.movie.Movie">
     <!--@mbg.generated-->
     update movie
     <set>
