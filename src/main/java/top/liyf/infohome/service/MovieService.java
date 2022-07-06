@@ -1,6 +1,5 @@
 package top.liyf.infohome.service;
 
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.druid.util.StringUtils;
@@ -21,9 +20,9 @@ import top.liyf.infohome.dao.MovieMapper;
 import top.liyf.infohome.dao.MovieRatingMapper;
 import top.liyf.infohome.model.movie.DbResponse;
 import top.liyf.infohome.model.movie.DbSubject;
-import top.liyf.infohome.model.weibo.Movie;
-import top.liyf.infohome.model.weibo.MovieCelebrity;
-import top.liyf.infohome.model.weibo.MovieRating;
+import top.liyf.infohome.model.movie.Movie;
+import top.liyf.infohome.model.movie.MovieCelebrity;
+import top.liyf.infohome.model.movie.MovieRating;
 import top.liyf.infohome.util.RedisConst;
 import top.liyf.redis.service.RedisService;
 

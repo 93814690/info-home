@@ -1,4 +1,4 @@
-package top.liyf.infohome.model.weibo;
+package top.liyf.infohome.model.movie;
 
 import java.io.Serializable;
 import lombok.Data;
