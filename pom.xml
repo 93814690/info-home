@@ -5,18 +5,21 @@
   <parent>
     <artifactId>fly</artifactId>
     <groupId>top.liyf</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </parent>
 
   <artifactId>info-home</artifactId>
-  <version>1.4.1</version>
+  <version>1.4.2</version>
   <name>info-home</name>
   <description>Demo project for Spring Boot</description>
 
   <properties>
     <java.version>11</java.version>
-    <fly.push.version>1.1.0</fly.push.version>
+    <fly.push-api.version>1.1.1</fly.push-api.version>
     <fly.auth.api.version>1.0</fly.auth.api.version>
+
+    <jsoup.version>1.15.3</jsoup.version>
+    <hutool.version>5.8.11</hutool.version>
   </properties>
 
   <dependencies>
@@ -54,7 +57,7 @@
     <dependency>
       <groupId>top.liyf</groupId>
       <artifactId>fly-push-api</artifactId>
-      <version>${fly.push.version}</version>
+      <version>${fly.push-api.version}</version>
     </dependency>
 
     <dependency>
@@ -82,13 +85,13 @@
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
-      <version>1.14.3</version>
+      <version>${jsoup.version}</version>
     </dependency>
 
     <dependency>
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-all</artifactId>
-      <version>5.8.0.M2</version>
+      <version>${hutool.version}</version>
     </dependency>
 
 

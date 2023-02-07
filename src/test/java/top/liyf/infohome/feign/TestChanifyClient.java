@@ -3,6 +3,7 @@ package top.liyf.infohome.feign;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import top.liyf.fly.push.api.feign.ChanifyClient;
 import top.liyf.fly.push.api.domain.ChanifyText;
 
 /**
