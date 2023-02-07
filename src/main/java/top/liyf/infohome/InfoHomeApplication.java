@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"top.liyf", "com.geccocrawler.gecco.spring"})
+@ComponentScan(basePackages = {"top.liyf"})
 @EnableDiscoveryClient
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"top.liyf"})
 @EnableScheduling
 @EnableAsync
 public class InfoHomeApplication {

@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import top.liyf.fly.push.api.feign.ChanifyClient;
 import top.liyf.fly.push.api.domain.ChanifyText;
 import top.liyf.infohome.dao.HotSearchPushMapper;
 import top.liyf.infohome.dao.UserChanifyMapper;
 import top.liyf.infohome.dto.UserSubscription;
-import top.liyf.infohome.feign.ChanifyClient;
+
 import top.liyf.infohome.model.weibo.HotSearchPush;
 import top.liyf.infohome.model.weibo.HotSearchV2;
 import top.liyf.infohome.model.weibo.SubscriptionWeiboHotSearch;
