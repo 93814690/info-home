@@ -64,7 +64,7 @@ public class WeiboService {
     public String getVisitorCookieByHttp() throws Exception {
         TidResult tidResult = getTid();
         String tid = tidResult.getTid();
-        int c = tidResult.getConficence() == null ? 100 : tidResult.getConficence();
+        int c = tidResult.getConfidence() == null ? 100 : tidResult.getConfidence();
         int w;
         if (tidResult.isNewTid()) {
             w = 3;

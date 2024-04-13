@@ -15,5 +15,5 @@ public class TidResult {
     @JsonProperty(value = "new_tid")
     private boolean newTid;
 
-    private Integer conficence;
+    private Integer confidence;
 }
