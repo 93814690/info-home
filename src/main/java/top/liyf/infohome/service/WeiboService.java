@@ -132,9 +132,11 @@ public class WeiboService {
         redisService.delete(RedisConst.WB_HOTSEARCH_NEW);
         redisService.sAdd(RedisConst.WB_HOTSEARCH_NEW, set.toArray());
         Set<String> diffString = redisService.sDiffString(RedisConst.WB_HOTSEARCH_OLD, RedisConst.WB_HOTSEARCH_NEW);
-        log.info("下榜热搜: {}", diffString);
-        for (String s : diffString) {
-            redisService.delete(RedisConst.WB_HOTSEARCH_PUSHED + s);
+        if (!diffString.isEmpty()) {
+            log.info("下榜热搜: {}", diffString);
+            for (String s : diffString) {
+                redisService.delete(RedisConst.WB_HOTSEARCH_PUSHED + s);
+            }
         }
         redisService.delete(RedisConst.WB_HOTSEARCH_OLD);
         redisService.sAdd(RedisConst.WB_HOTSEARCH_OLD, set.toArray());
